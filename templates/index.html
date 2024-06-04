@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<!-- Blog Posts Section -->
+<section class="py-12 bg-gray-100">
+    <div class="container mx-auto">
+        <h2 class="text-3xl font-bold mb-8">Blog Posts</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for post in posts %}
+            <div class="bg-white shadow-lg rounded-lg p-6">
+                <h3 class="text-2xl font-bold mb-2">{{ post.title }}</h3>
+                <p class="text-gray-700 mb-4">{{ post.content[:100] }}...</p>
+                <a href="{{ url_for('post', post_id=post.id) }}" class="text-blue-500 hover:underline">Read more</a>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
+<!-- News Section -->
+<section class="py-12 bg-white">
+    <div class="container mx-auto">
+        <h2 class="text-3xl font-bold mb-8 text-center text-orange-500">Your Daily News</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Example News Item -->
+            <div class="bg-gray-100 shadow-lg rounded-lg p-6">
+                <img src="{{ url_for('static', filename='../static/img/society1.jpg') }}" alt="News Image" class="w-full mb-4 cursor-pointer">
+                <h3 class="text-2xl font-bold mb-2"> Our Society</h3>
+                <p class="text-gray-700 mb-4">
+                    Our society is the best. We have the best people, the best culture, and the best food. This is the place to be!
+                    From the best chefs to the best actors, we have something for everyone. Come and join us in celebrating the best of our society.
+                </p>
+                <a href="https://www.youtube.com" target="_blank" class="text-blue-500 hover:underline" rel="noopener noreferrer">Watch video</a>
+            </div>
+            <!-- Add more news items here -->
+
+			<div class="bg-gray-100 shadow-lg rounded-lg p-6">
+				<img src="{{ url_for('static', filename='../static/img/foot.jpg') }}"  alt="News Image" class="w-full mb-4 cursor-pointer">
+				<h3 class="text-2xl font-bold mb-2">Sport</h3>
+				<p class="text-gray-700 mb-4">Manchester United vs. Arsenal.
+					The latest football news from the Premier League. This is the best football game ever!
+				from a fully packed stadium with 11,000 fans. The frenzy fans scream in the background. it was deafning.
+				<small class="text-gray-500">By: Eliysha Abdin</small>
+				<a href="https://www.youtube.com" target="_blank" class="text-blue-500 hover:underline" rel="noopener noreferrer">Watch video</a>
+				</p>
+
+
+			</div>
+			<!-- Add more news items here -->
+			<!-- Politic News -->
+			<div class="bg-gray-100 shadow-lg rounded-lg p-6">
+				<img src="{{ url_for('static', filename='../static/img/vote1.jpg') }}"  alt="News Image" class="w-full mb-4 cursor-pointer">
+				<h3 class="text-2xl font-bold mb-2">USA Elections</h3>
+				<p class="text-gray-700 mb-4">Today, the US elections are in full swing.
+					Many of us are excited about the upcoming election...</p>
+				</p>
+				<a href="https://www.youtube.com" target="_blank" class="text-blue-500 hover:underline" rel="noopener noreferrer">Watch video</a>
+			</div>
+        </div>
+    </div>
+</section>
+
+<!-- About Us Section -->
+<section class="py-12 bg-gray-100">
+    <div class="container mx-auto">
+        <h2 class="text-3xl font-bold mb-8">About Us</h2>
+        <p class="text-gray-700 mb-4">
+        Welcome to <strong>THE CUTTING EDGE BLOG</strong>,
+        your go-to source for insightful and engaging content on a wide range of topics that matter most in today’s world. Our mission is to inform, inspire, and engage our readers with high-quality articles that cover the latest in technology, sports, society, and politics, alongside thought-provoking contributions from our vibrant community of users.
+        </p>
+        <h3 class="text-2xl font-semibold mb-4">Our Focus</h3>
+        <p class="text-gray-700 mb-4">
+            <strong>Technology:</strong> In a rapidly evolving digital age, staying updated on the latest technological advancements is crucial. At [Your Blog Name], we delve into the cutting-edge innovations shaping our world. From AI breakthroughs and cybersecurity to the newest gadgets and software, we provide in-depth analyses and practical insights to keep you informed and ahead of the curve.
+        </p>
+        <p class="text-gray-700 mb-4">
+            <strong>Sports News:</strong> For the sports enthusiasts, we bring you comprehensive coverage of major sporting events, insightful commentary, and exclusive interviews with athletes. Whether it's football, basketball, tennis, or any other sport, our detailed reports and expert opinions ensure you never miss a moment of the action.
+        </p>
+        <p class="text-gray-700 mb-4">
+            <strong>Society:</strong> Understanding the dynamics of our society is essential for fostering a well-informed and inclusive community. Our articles explore various societal issues, cultural trends, and human interest stories. We aim to shed light on the diverse aspects of human life and the social forces that influence our world.
+        </p>
+        <p class="text-gray-700 mb-4">
+            <strong>Politics:</strong> Navigating the complex landscape of politics requires reliable information and thoughtful analysis. At [Your Blog Name], we cover political developments, policy changes, and key events with objectivity and depth. Our goal is to provide our readers with a clear and comprehensive understanding of the political environment and its impact on everyday life.
+        </p>
+        <p class="text-gray-700 mb-4">
+            <strong>Shared Topics from Users:</strong> We believe that everyone has a unique perspective and valuable insights to offer. That’s why we encourage our readers to contribute their own articles and stories. By sharing diverse viewpoints and experiences, we aim to foster a dynamic and interactive community where every voice is heard and respected.
+        </p>
+        <h3 class="text-2xl font-semibold mb-4">Our Commitment</h3>
+        <p class="text-gray-700 mb-4">
+            At [Your Blog Name], we are committed to delivering content that is not only informative but also engaging and thought-provoking. Our team of dedicated writers and editors work tirelessly to ensure that every article meets our high standards of quality and integrity. We strive to be a trusted source of information and a platform for meaningful dialogue and exchange.
+        </p>
+        <p class="text-gray-700">
+            Thank you for being a part of our community. Together, let’s explore, learn, and grow as we navigate the fascinating complexities of our world.
+        </p>
+    </div>
+</section>
+
+
+<!-- Contact Us Section -->
+<footer class="py-12 bg-white">
+    <div class="container mx-auto">
+        <h2 class="text-3xl font-bold mb-8">Contact Us</h2>
+        <form method="POST" action="{{ url_for('contact') }}">
+            {{ form.hidden_tag() }}
+            <div class="mb-4">
+                <label for="name" class="block text-gray-700">Name</label>
+                <input type="text" id="name" name="name" class="w-full p-2 border border-gray-300 rounded" required>
+            </div>
+            <div class="mb-4">
+                <label for="email" class="block text-gray-700">Email</label>
+                <input type="email" id="email" name="email" class="w-full p-2 border border-gray-300 rounded" required>
+            </div>
+            <div class="mb-4">
+                <label for="message" class="block text-gray-700">Message</label>
+                <textarea id="message" name="message" rows="5" class="w-full p-2 border border-gray-300 rounded" required></textarea>
+            </div>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700">Send</button>
+        </form>
+    </div>
+</footer>
+{% endblock %}

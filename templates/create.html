@@ -1,0 +1,28 @@
+{% extends 'base.html' %} {% block content %}
+<section class="py-12 bg-white">
+	<div class="container mx-auto">
+		<h2 class="text-3xl font-bold mb-8">Create a New Post</h2>
+		<form method="post" class="bg-gray-100 p-6 rounded-lg shadow-md">
+			{{ form.hidden_tag() }}
+			<div class="mb-4">
+				<label for="title" class="block text-gray-700 font-bold mb-2"
+					>Title</label
+				>
+				{{ form.title(class="w-full p-2 border border-gray-300 rounded") }}
+			</div>
+
+			<div class="mb-4">
+				<label for="content" class="block text-gray-700 font-bold mb-2"
+					>Content</label
+				>
+				{{ form.content(class="w-full p-2 border border-gray-300 rounded") }}
+			</div>
+
+			<div class="flex justify-end">
+				{{ form.submit(class="bg-blue-500 text-white px-4 py-2 rounded
+				hover:bg-blue-700") }}
+			</div>
+		</form>
+	</div>
+</section>
+{% endblock %}
