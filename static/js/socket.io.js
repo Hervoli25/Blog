@@ -1,0 +1,14 @@
+/project_root
+    /static
+        /js
+            socket.io.js
+            script.js
+    /templates
+        base.html
+        chat.html
+    app.py
+    routes.py
+    models.py
+    forms.py
+    config.py
+    .env

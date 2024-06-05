@@ -1,8 +1,6 @@
 from flask_wtf import FlaskForm
-from wtforms import StringField, TextAreaField, SubmitField,FileField
+from wtforms import StringField, TextAreaField, SubmitField, FileField, PasswordField
 from wtforms.validators import DataRequired, Email
-from wtforms import PasswordField  # Add this import statement
-
 
 class LoginForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
@@ -23,7 +21,6 @@ class ContactForm(FlaskForm):
     email = StringField('Email', validators=[DataRequired(), Email()])
     message = TextAreaField('Message', validators=[DataRequired()])
     submit = SubmitField('Send')
-
 
 class CreatePostForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])

@@ -2,7 +2,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	// Smooth Scroll
 	document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
 		anchor.addEventListener('click', function (e) {
-			e.preventDefault(); // Prevent default anchor click behavior
+			e.preventDefault();
 			document.querySelector(this.getAttribute('href')).scrollIntoView({
 				behavior: 'smooth',
 			});
@@ -36,19 +36,87 @@ document.addEventListener('DOMContentLoaded', () => {
 	// Example Pop-Up Functionality
 	document.querySelectorAll('.news-image').forEach((img) => {
 		img.addEventListener('click', (e) => {
-			e.preventDefault(); // Prevent default behavior on image click (if it has a link)
+			e.preventDefault();
 			alert('This is a news image!');
 		});
 	});
 
 	// Prevent default form submission and show a toast instead
-	const contactForm = document.querySelector(
-		'form[action="{{ url_for("contact") }}"]'
-	);
+	const contactForm = document.querySelector('form[action="/contact"]');
 	if (contactForm) {
 		contactForm.addEventListener('submit', (e) => {
-			e.preventDefault(); // Prevent default form submission
-			showToast('Form submitted successfully!');
+			e.preventDefault();
+			const formData = new FormData(contactForm);
+			fetch('/contact', {
+				method: 'POST',
+				body: formData,
+			})
+				.then((response) => response.json())
+				.then((data) => {
+					if (data.success) {
+						showToast('Form submitted successfully!');
+						contactForm.reset(); // Reset the form fields
+					} else {
+						showToast('There was an error with your submission.');
+					}
+				})
+				.catch((error) => {
+					showToast('There was an error with your submission.');
+				});
 		});
 	}
+
+	// Chat functionality
+	const socket = io.connect('http://' + document.domain + ':' + location.port);
+
+	const chatForm = document.getElementById('chat-form');
+	if (chatForm) {
+		chatForm.addEventListener('submit', (e) => {
+			e.preventDefault();
+			const message = document.getElementById('chat-message').value;
+			socket.send(message);
+			document.getElementById('chat-message').value = '';
+		});
+
+		socket.on('message', (msg) => {
+			const chatBox = document.getElementById('chat-box');
+			const newMessage = document.createElement('div');
+			newMessage.textContent = msg;
+			chatBox.appendChild(newMessage);
+			chatBox.scrollTop = chatBox.scrollHeight;
+		});
+	}
+
+	// Follow and unfollow buttons
+	const csrfToken = document
+		.querySelector('meta[name="csrf-token"]')
+		.getAttribute('content');
+	document.querySelectorAll('.follow-button').forEach((button) => {
+		button.addEventListener('click', function (event) {
+			event.preventDefault();
+			const userId = this.dataset.userId;
+			const action = this.classList.contains('follow') ? 'follow' : 'unfollow';
+			fetch(`/${action}/${userId}`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+					'X-CSRFToken': csrfToken,
+				},
+			})
+				.then((response) => response.json())
+				.then((data) => {
+					if (data.success) {
+						if (action === 'follow') {
+							this.textContent = 'Unfollow';
+							this.classList.remove('follow');
+							this.classList.add('unfollow');
+						} else {
+							this.textContent = 'Follow';
+							this.classList.remove('unfollow');
+							this.classList.add('follow');
+						}
+					}
+				});
+		});
+	});
 });

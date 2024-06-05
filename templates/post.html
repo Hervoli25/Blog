@@ -1,130 +1,61 @@
 {% extends 'base.html' %} {% block content %}
-<section class="py-12 bg-white">
+<section class="py-12 bg-gray-100">
 	<div class="container mx-auto">
-		<h2 class="text-3xl font-bold mb-8">{{ post.title }}</h2>
-		<div class="flex items-center mb-8">
-			{% if post.author.profile_picture %}
-			<img
-				src="{{ url_for('static', filename='uploads/' ~ post.author.profile_picture) }}"
-				alt="Author's Profile Picture"
-				class="w-12 h-12 rounded-full mr-4 cursor-pointer"
-			/>
-			{% endif %}
+		<h2 class="text-3xl font-bold mb-8 text-center">{{ post.title }}</h2>
+		<div class="bg-white shadow-lg rounded-lg p-6">
+			<p class="text-gray-700 mb-4">{{ post.content }}</p>
+			<p class="text-gray-500">By: {{ author.username }}</p>
 			<div>
-				<p class="text-gray-700">{{ post.author.username }}</p>
-				<p class="text-gray-500 text-sm">
-					{{ post.timestamp.strftime('%Y-%m-%d') }}
+				{% if current_user.is_authenticated %}
+				<form
+					action="{{ url_for('app.follow', user_id=author.id) }}"
+					method="POST"
+				>
+					<button
+						type="submit"
+						class="follow-button {{ 'unfollow' if current_user.is_following(author) else 'follow' }}"
+					>
+						{{ 'Unfollow' if current_user.is_following(author) else 'Follow' }}
+					</button>
+				</form>
+				{% else %}
+				<p>
+					<a href="{{ url_for('app.login') }}">Log in</a> to follow this author.
 				</p>
+				{% endif %}
 			</div>
 		</div>
-		<p class="text-gray-700 mb-8 cursor-pointer">{{ post.content }}</p>
-
-		<div class="flex space-x-4 mb-4">
-			<button id="like-button" class="text-red-500 hover:text-red-700">
-				<i class="fas fa-heart"></i>
-				<span id="like-count">{{ post.likes }}</span>
-			</button>
-			<button id="dislike-button" class="text-yellow-500 hover:text-yellow-700">
-				<i class="fas fa-thumbs-down"></i>
-				<span id="dislike-count">{{ post.dislikes }}</span>
-			</button>
-		</div>
-
-		{% if current_user.is_authenticated and current_user.id == post.user_id %}
-		<div class="flex justify-end space-x-2 mb-4">
-			<a
-				href="{{ url_for('edit_post', post_id=post.id) }}"
-				class="text-yellow-500 hover:underline"
-				>Edit</a
-			>
-			<form
-				action="{{ url_for('delete_post', post_id=post.id) }}"
-				method="post"
-				class="inline"
-			>
-				{{ form.hidden_tag() }}
-				<button type="submit" class="text-red-500 hover:underline">
-					Delete
-				</button>
-			</form>
-		</div>
-		{% endif %}
-
-		<h3 class="text-xl font-semibold mb-4">Comments</h3>
-		<div class="mb-4">
+		<h3 class="text-2xl font-bold mb-4 mt-8">Comments</h3>
+		<div>
 			{% for comment in comments %}
-			<div class="bg-white shadow-lg rounded-lg p-4 mb-4">
+			<div class="bg-white shadow-lg rounded-lg p-6 mb-4">
 				<p class="text-gray-700">{{ comment.content }}</p>
-				<p class="text-gray-500 text-sm">
-					By {{ comment.author.username }} on {{
-					comment.timestamp.strftime('%Y-%m-%d') }}
-				</p>
+				<p class="text-gray-500">By: {{ comment.author.username }}</p>
 			</div>
 			{% endfor %}
 		</div>
-
-		{% if current_user.is_authenticated %}
-		<form
-			action="{{ url_for('comment_post', post_id=post.id) }}"
-			method="post"
-			class="mb-4"
-		>
-			{{ form.hidden_tag() }}
-			<textarea
-				name="content"
-				rows="3"
-				class="w-full p-2 border border-gray-300 rounded mb-2"
-				placeholder="Write a comment..."
-				required
-			></textarea>
-			<button
-				type="submit"
-				class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+		<div>
+			{% if current_user.is_authenticated %}
+			<form
+				action="{{ url_for('app.comment_post', post_id=post.id) }}"
+				method="POST"
 			>
-				Comment
-			</button>
-		</form>
-		{% endif %}
+				{{ form.hidden_tag() }}
+				<div class="mb-4">
+					<label for="content" class="block text-gray-700">Add a Comment</label>
+					{{ form.content(class="w-full p-2 border border-gray-300 rounded") }}
+				</div>
+				<button
+					type="submit"
+					class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+				>
+					Comment
+				</button>
+			</form>
+			{% else %}
+			<p><a href="{{ url_for('app.login') }}">Log in</a> to comment.</p>
+			{% endif %}
+		</div>
 	</div>
 </section>
-
-<script>
-	document.addEventListener('DOMContentLoaded', function () {
-		const csrfToken = document
-			.querySelector('meta[name="csrf-token"]')
-			.getAttribute('content');
-
-		document
-			.getElementById('like-button')
-			.addEventListener('click', function () {
-				fetch('{{ url_for("like_post", post_id=post.id) }}', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-						'X-CSRFToken': csrfToken,
-					},
-				})
-					.then((response) => response.json())
-					.then((data) => {
-						document.getElementById('like-count').innerText = data.likes;
-					});
-			});
-
-		document
-			.getElementById('dislike-button')
-			.addEventListener('click', function () {
-				fetch('{{ url_for("dislike_post", post_id=post.id) }}', {
-					method: 'POST',
-					headers: {
-						'Content-Type': 'application/json',
-						'X-CSRFToken': csrfToken,
-					},
-				})
-					.then((response) => response.json())
-					.then((data) => {
-						document.getElementById('dislike-count').innerText = data.dislikes;
-					});
-			});
-	});
-</script>
 {% endblock %}

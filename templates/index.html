@@ -9,10 +9,29 @@
 				<h3 class="text-2xl font-bold mb-2">{{ post.title }}</h3>
 				<p class="text-gray-700 mb-4">{{ post.content[:100] }}...</p>
 				<a
-					href="{{ url_for('post', post_id=post.id) }}"
+					href="{{ url_for('app.post', post_id=post.id) }}"
 					class="text-blue-500 hover:underline"
 					>Read more</a
 				>
+				<form
+					action="{{ url_for('app.share_post', post_id=post.id) }}"
+					method="post"
+				>
+					{{ form.hidden_tag() }}
+					<input
+						type="text"
+						name="shared_with"
+						placeholder="Share with (username)"
+						class="border rounded px-2 py-1"
+						required
+					/>
+					<button
+						type="submit"
+						class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
+					>
+						Share
+					</button>
+				</form>
 			</div>
 			{% endfor %}
 		</div>
@@ -25,7 +44,9 @@
 		<h2 class="text-3xl font-bold mb-8 text-center text-orange-500">
 			Your Daily News
 		</h2>
-		<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+		<div
+			class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 cursor-pointer"
+		>
 			<!-- Example News Item -->
 			<div class="bg-gray-100 shadow-lg rounded-lg p-6 news-card">
 				<img
@@ -49,7 +70,6 @@
 				>
 			</div>
 			<!-- Add more news items here -->
-
 			<div class="bg-gray-100 shadow-lg rounded-lg p-6 news-card">
 				<img
 					src="{{ url_for('static', filename='../static/img/foot.jpg') }}"
@@ -73,7 +93,6 @@
 				>
 			</div>
 			<!-- Add more news items here -->
-
 			<div class="bg-gray-100 shadow-lg rounded-lg p-6 news-card">
 				<img
 					src="{{ url_for('static', filename='../static/img/vote1.jpg') }}"
@@ -93,7 +112,6 @@
 					>Watch video</a
 				>
 			</div>
-
 			<!-- Add more news items here -->
 			<div class="bg-gray-100 shadow-lg rounded-lg p-6 news-card">
 				<img
@@ -101,14 +119,14 @@
 					alt="News Image"
 					class="w-full mb-4 cursor-pointer news-image"
 				/>
-				<h3 class="text-2xl font-bold mb-2">Techology</h3>
+				<h3 class="text-2xl font-bold mb-2">Technology</h3>
 				<p class="text-gray-700 mb-4">
 					In today's world, technology is evolving rapidly. We can't wait to see
 					what the future holds for us. AI is growing in popularity.taking the
 					world by storm. From self-driving cars to smart homes, the
 					possibilities are endless. Stay tuned for more updates on the latest
 					tech trends and innovations. it's a part of our lives now, for me I
-					take it as a personal assistance, a part of my dily life.<small
+					take it as a personal assistance, a part of my daily life.<small
 						class="text-gray-500"
 						>By: Finta Tititakin😎</small
 					>'
@@ -195,7 +213,7 @@
 <footer class="py-12 bg-white">
 	<div class="container mx-auto">
 		<h2 class="text-3xl font-bold mb-8">Contact Us</h2>
-		<form method="POST" action="{{ url_for('contact') }}">
+		<form method="POST" action="{{ url_for('app.contact') }}">
 			{{ form.hidden_tag() }}
 			<div class="mb-4">
 				<label for="name" class="block text-gray-700">Name</label>

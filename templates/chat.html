@@ -1,0 +1,72 @@
+{% extends 'base.html' %} {% block content %}
+<section class="py-12 bg-white">
+	<div class="container mx-auto">
+		<h2 class="text-3xl font-bold mb-8">Chat Room</h2>
+
+		<form id="user-select-form">
+			<label for="chat-user" class="block text-gray-700"
+				>Select User to Chat With:</label
+			>
+			<select
+				id="chat-user"
+				class="block w-full p-2 border border-gray-300 rounded mb-4"
+				required
+			>
+				{% for user in users %}
+				<option value="{{ user.id }}">{{ user.username }}</option>
+				{% endfor %}
+			</select>
+		</form>
+
+		<div id="chat-box" class="chat-box">
+			<!-- Messages will appear here -->
+		</div>
+
+		<form id="chat-form">
+			<input
+				type="text"
+				id="chat-message"
+				class="chat-message"
+				placeholder="Type a message..."
+				required
+			/>
+			<button type="submit" class="chat-submit">Send</button>
+		</form>
+	</div>
+</section>
+
+<!-- Include Socket.IO from CDN -->
+<script src="https://cdn.socket.io/4.0.0/socket.io.min.js"></script>
+<script>
+	document.addEventListener('DOMContentLoaded', () => {
+		const socket = io.connect(
+			'http://' + document.domain + ':' + location.port
+		);
+
+		socket.on('connect', () => {
+			console.log('Connected to server');
+		});
+
+		socket.on('message', (data) => {
+			const chatBox = document.getElementById('chat-box');
+			const newMessage = document.createElement('div');
+			newMessage.textContent = `${data.from_user}: ${data.message}`;
+			chatBox.appendChild(newMessage);
+			chatBox.scrollTop = chatBox.scrollHeight;
+		});
+
+		const chatForm = document.getElementById('chat-form');
+		if (chatForm) {
+			chatForm.addEventListener('submit', (e) => {
+				e.preventDefault();
+				const messageInput = document.getElementById('chat-message');
+				const userInput = document.getElementById('chat-user');
+				const message = messageInput.value;
+				const userId = userInput.value;
+				socket.emit('message', { message: message, to_user: userId });
+				messageInput.value = '';
+			});
+		}
+	});
+</script>
+{% endblock %}
