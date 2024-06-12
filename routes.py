@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, redirect, url_for, flash, request, jsonify
 from flask_login import login_required, current_user, login_user, logout_user
-from flask_socketio import send
+from flask_socketio import send, emit
 from models import db, User, Post, Comment, ContactMessage
 from forms import LoginForm, RegisterForm, CreatePostForm, ContactForm, ProfileForm, EditPostForm, CommentForm
 from werkzeug.utils import secure_filename
@@ -205,7 +205,7 @@ def share_post(post_id):
         flash(f'Post shared with {user.username}', 'success')
     else:
         flash('User not found', 'danger')
-    return redirect(url_for('app.post', post_id=post_id))
+    return redirect(url_for('app.post', post_id=post.id))
 
 @socketio.on('message')
 def handle_message(data):
@@ -217,13 +217,11 @@ def handle_message(data):
     to_user = User.query.get(to_user_id)
     if to_user:
         # Emit the message to the recipient
-        send({'message': message, 'from_user': from_user}, room=to_user_id)
+        emit('message', {'message': message, 'from_user': from_user}, room=to_user_id)
 
     # Optionally, broadcast the message to all users or handle as needed
-    send({'message': message, 'from_user': from_user}, broadcast=True)
-
+    emit('message', {'message': message, 'from_user': from_user}, broadcast=True)
 
 @app.route('/policy')
 def policy():
     return render_template('policy.html')
-
